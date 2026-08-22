@@ -1,0 +1,13 @@
+[package]
+name = "egressd-forward"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+egressd-core = { path = "../egressd-core" }
+egressd-orchestrator = { path = "../egressd-orchestrator" }
+tokio = { workspace = true }
+serde = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+reqwest = { workspace = true }

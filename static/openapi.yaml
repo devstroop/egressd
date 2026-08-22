@@ -1,0 +1,6 @@
+openapi: 3.1.0
+info:
+  title: egressd API
+  version: 0.1.0
+  description: Control-plane for proxy pool (scaffold, full spec in M3)
+paths: {}

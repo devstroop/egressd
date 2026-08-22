@@ -1,0 +1,29 @@
+# egressd — copy to config.toml
+# All vendor-agnostic. WARP is one l3 provider (image), not the arch.
+
+[server]
+host = "0.0.0.0"
+port = 9090
+
+[pool]
+image = "warpgate:local"          # l3 provider image for MVP
+prefix = "egressd-"               # or "warpgate-" for proxyhub compat
+count = 3
+network = "egressd-net"           # compose overrides to <project>_egressd-net
+max_pool = 20
+
+[health]
+host = "cloudflare.com"
+port = 443
+timeout_secs = 5
+interval_secs = 30
+
+[tasks]
+workers = 3
+max_items = 200
+max_age_secs = 3600
+idempotency_max_age_secs = 86400
+
+# [auth]
+# api_key = ""  # empty disables auth (private net default)
+# rate_limit = 10  # per IP per 60s on failed auth

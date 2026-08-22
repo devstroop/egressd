@@ -1,0 +1,25 @@
+services:
+  egressd:
+    build: .
+    image: egressd:local
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    environment:
+      EGRESSD_IMAGE: "warpgate:local"
+      EGRESSD_PREFIX: "egressd-"
+      EGRESSD_COUNT: "3"
+      EGRESSD_NETWORK: "egressd_egressd-net"
+      EGRESSD_PORT: "9090"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - egressd-net
+
+networks:
+  egressd-net:
+    driver: bridge
+
+volumes:
+  egressd-data:
+  egressd-cache:
