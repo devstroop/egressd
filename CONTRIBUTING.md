@@ -18,11 +18,11 @@ main (or master — pick one, protected)
  └─ develop (integration, protected)
      └─ features | fixes | chores | other  (category, early, e.g., features)
          └─ feat/<epic> | fix/<slug>       (epic, e.g., feat/api-v1)
-             └─ feat/<epic>/<part>         (task, e.g., feat/api-v1/health-probe)
+             └─ feat/<epic>-<part>       (task, e.g., feat/api-v1-health-probe)  # hyphen not slash
 ```
 
 - Full word for category (`features` not `feat`), short `feat`/`fix` for leaf. `kebab-case` slug only. No `asdfghjkl` placeholders.
-- Each leaf is one GitHub Issue → PR to `feat/<epic>` → `features` → `develop` → `main` on tag.
+- Each leaf `feat/<epic>-<part>` = one Issue → PR to `feat/<epic>` → `features` → `develop` → `main` (hyphen avoids git file/dir conflict).
 - Hotfix: `hotfix/<slug>` from `main` → PR to `main` + back-merge `develop`.
 
 ## Worktrees
@@ -32,7 +32,7 @@ git worktree add ../egressd-wt-main main
 git worktree add ../egressd-wt-develop develop
 git worktree add ../egressd-wt-features features
 git worktree add ../egressd-wt-feat-api-v1 feat/api-v1
-git worktree add ../egressd-wt-feat-api-v1-health feat/api-v1/health-probe
+git worktree add ../egressd-wt-feat-api-v1-health feat/api-v1-health
 ```
 
 ## Milestones

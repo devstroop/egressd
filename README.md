@@ -51,7 +51,7 @@ main (or master — pick one, protected)
  └─ develop (integration)
      └─ features (category, early)
          ├─ feat/<epic>              # e.g., feat/api-v1, feat/orchestrator-v1
-         └─ feat/<epic>/<part>       # e.g., feat/api-v1/health-probe
+         └─ feat/<epic>-<part>       # e.g., feat/api-v1-health-probe (hyphen, slash would conflict feat/epic)
      └─ fixes / chores / other (category peers of features)
          └─ fix/<slug> / chore/<slug>
 ```
