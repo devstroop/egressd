@@ -1,4 +1,4 @@
-# Batch C — Consumption (Draft Discussion)
+# Consumption — Lease & Forward (Both Modes)
 
 ## Objective
 

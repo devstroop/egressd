@@ -2,7 +2,7 @@
 
 Vendor-agnostic proxy orchestration control-plane — WARP is one provider, not the architecture.
 
-> **Status:** Scaffold / Discussion phase — no stable API yet. See [Discussions](../../discussions) for objectives and batch planning.
+> **Status:** Scaffold / Discussion phase — no stable API yet. See [Discussions](../../discussions) for objectives.
 
 `egressd` owns the proxy lifecycle (Docker/bollard, health, scaling, rotation) and exposes a stable Management API. Data-plane traffic goes directly to proxy containers (SOCKS5 / HTTP) — the daemon is control-plane only except for the optional `POST /v1/forward` convenience.
 
@@ -41,7 +41,7 @@ egressd/
 Strict flow, no code until milestones hardened:
 
 ```
-repo → objectives (this README) → Discussions (batched A-D) → Plan → Issues (GitHub) → Milestones → worktree/branch
+repo → objectives (this README) → Discussions → Plan → Issues (GitHub) → Milestones → worktree/branch
 ```
 
 Branch hierarchy (early creation):

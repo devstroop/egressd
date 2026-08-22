@@ -1,4 +1,4 @@
-# Batch A — Contract & Domain (Draft Discussion)
+# Contract & Domain — Stable /v1 API & Crate Separation
 
 ## Objective
 

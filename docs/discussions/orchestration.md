@@ -1,4 +1,4 @@
-# Batch B — Orchestration (Draft Discussion)
+# Orchestration — Provider Trait, Pool Reconciler, Health & Volumes
 
 ## Objective
 

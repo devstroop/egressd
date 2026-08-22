@@ -4,7 +4,7 @@
 
 1. **Repo** — this scaffold (`main`, `develop`, `features` worktrees ready).
 2. **Objectives** — `README.md` O1-O6.
-3. **Discussions** — batched A-D in GitHub Discussions (see `docs/discussions/` drafts until enabled).
+3. **Discussions** — GitHub Discussions (see `docs/discussions/` drafts).
 4. **Plan** — ADR in `docs/adr/`.
 5. **Issues** — GitHub Issues, validated, hardened, labelled, milestoned.
 6. **Worktree/Branch** — per hierarchy below, no direct push to `main`/`develop`.

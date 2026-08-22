@@ -1,4 +1,4 @@
-# Batch D — Delivery (Draft Discussion)
+# Delivery — Compose, CI & Branching Strategy
 
 ## Objective
 
