@@ -12,7 +12,7 @@ Vendor-agnostic proxy orchestration control-plane — WARP is one provider, not 
 
 - **O1 — Agnostic Orchestration:** `trait Provider` — WARP (`warpgate:local` + 3proxy) for MVP, pluggable others later, same pool semantics.
 - **O2 — Stable Management API:** Versioned `/v1`, OpenAPI 3.1 source of truth, `202 Accepted + Location: /v1/tasks/{id}` for mutations, strict `422` validation, `409` idempotency, `X-Request-ID` envelope.
-- **O3 — Both Consumption Modes:** Lease (`GET /v1/proxies/next` → `socks5://` + explicit `release`) and Forward (`POST /v1/forward`, optional `CONNECT`).
+- **O3 — Both Consumption Modes:** Lease (`POST /v1/leases` → `socks5://` + `DELETE /v1/leases/{id}` release) and Forward (`POST /v1/forward`, optional `CONNECT`).
 - **O4 — Desired-State Pool:** `target` reconciler, per-proxy volumes preserving registration, triple health (SOCKS5 handshake + HTTP CONNECT + tunnel status), `busy` guard.
 - **O5 — Private-Net Basic:** `MANAGER_API_KEY` Bearer, `AUTH_EXEMPT` health/openapi/docs, permissive CORS — hardening later.
 - **O6 — Professional Separation:** `core` (no axum/bollard), `orchestrator` (bollard), `api` (axum), `forward` (reqwest) — tested with fake Docker, `clippy -D warnings`.
