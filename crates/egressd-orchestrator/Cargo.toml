@@ -12,3 +12,5 @@ thiserror = { workspace = true }
 tracing = { workspace = true }
 bollard = { workspace = true }
 rand = { workspace = true }
+futures = { workspace = true }
+futures-util = { workspace = true }
