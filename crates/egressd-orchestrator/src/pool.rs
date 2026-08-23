@@ -158,6 +158,14 @@ impl Pool {
             ep.busy = busy;
         }
     }
+
+    /// Set health flags on an endpoint (used by health checker / tests).
+    pub async fn set_healthy(&self, name: &str, healthy: bool) {
+        let mut pool = self.pool.write().await;
+        if let Some(ep) = pool.iter_mut().find(|e| e.name == name) {
+            ep.healthy = healthy;
+        }
+    }
 }
 
 #[cfg(test)]
