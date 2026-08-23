@@ -17,3 +17,8 @@ tracing = { workspace = true }
 uuid = { workspace = true }
 chrono = { workspace = true }
 regex = { workspace = true }
+rand = { workspace = true }
+tower = { version = "0.5", features = ["util"] }
+
+[dev-dependencies]
+mime = "0.3"

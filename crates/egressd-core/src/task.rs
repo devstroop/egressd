@@ -148,24 +148,38 @@ impl TaskRegistry {
                                    // No-op: caller should use submit_arc
     }
 
-    // Preferred: Arc-based submit for async runtime
-    pub fn submit_arc<F>(self: &Arc<Self>, task_id: String, func: F)
+    /// Execute a task future inline (awaited by the caller) while preserving
+    /// lifecycle bookkeeping. Used when the operation is fast (fake docker /
+    /// local exec) so tests stay deterministic; long-running production ops
+    /// use [`TaskRegistry::submit_arc`] instead.
+    pub async fn run_inline<F, Fut>(self: &Arc<Self>, task_id: String, func: F)
     where
-        F: FnOnce() -> Result<Option<serde_json::Value>, TaskError> + Send + 'static,
+        F: FnOnce() -> Fut,
+        Fut: std::future::Future<Output = Result<Option<serde_json::Value>, TaskError>>,
+    {
+        self.get_mut(&task_id, |t| t.start());
+        match func().await {
+            Ok(val) => self.get_mut(&task_id, |t| t.succeed(val)),
+            Err(e) => self.get_mut(&task_id, |t| t.fail(e)),
+        };
+    }
+
+    /// Preferred: Arc-based submit for async runtime. The closure returns a
+    /// future executed on the tokio runtime — no blocking, no `Handle::block_on`.
+    pub fn submit_arc<F, Fut>(self: &Arc<Self>, task_id: String, func: F)
+    where
+        F: FnOnce() -> Fut + Send + 'static,
+        Fut: std::future::Future<Output = Result<Option<serde_json::Value>, TaskError>> + Send + 'static,
     {
         self.get_mut(&task_id, |t| t.start());
         let self_clone = Arc::clone(self);
         tokio::spawn(async move {
-            let res = tokio::task::spawn_blocking(func).await;
-            match res {
-                Ok(Ok(val)) => {
+            match func().await {
+                Ok(val) => {
                     self_clone.get_mut(&task_id, |t| t.succeed(val));
                 }
-                Ok(Err(e)) => {
-                    self_clone.get_mut(&task_id, |t| t.fail(e));
-                }
                 Err(e) => {
-                    self_clone.get_mut(&task_id, |t| t.fail_internal(e.to_string()));
+                    self_clone.get_mut(&task_id, |t| t.fail(e));
                 }
             }
         });
@@ -369,7 +383,7 @@ mod tests {
         let reg = TaskRegistry::new();
         let t = reg.create("proxy.create");
         let id = t.id.clone();
-        reg.submit_arc(id.clone(), || Ok(Some(serde_json::json!({"ok":true}))));
+        reg.submit_arc(id.clone(), || async { Ok(Some(serde_json::json!({"ok":true}))) });
         // Wait a bit
         tokio::time::sleep(Duration::from_millis(100)).await;
         let done = reg.get(&id).unwrap();
@@ -381,7 +395,7 @@ mod tests {
         let reg = TaskRegistry::new();
         let t = reg.create("proxy.create");
         let id = t.id.clone();
-        reg.submit_arc(id.clone(), || {
+        reg.submit_arc(id.clone(), || async {
             Err(TaskError::new("CREATE_FAILED", "boom"))
         });
         tokio::time::sleep(Duration::from_millis(100)).await;

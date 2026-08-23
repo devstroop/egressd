@@ -233,7 +233,6 @@ impl DockerClient {
 
 // ── Fake for tests (no Docker socket) ─────────────────────────────────────
 
-#[cfg(test)]
 pub mod fake {
     use std::collections::HashMap;
     use std::sync::{Arc, Mutex};

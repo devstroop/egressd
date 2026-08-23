@@ -1,13 +1,10 @@
+use crate::docker::fake::FakeDocker;
 use egressd_core::endpoint::Endpoint;
 use egressd_core::pool::PoolSummary;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use tokio::sync::{Mutex, RwLock};
 
-#[cfg(test)]
-use crate::docker::fake::FakeDocker;
-
 const MAX_POOL: usize = 20;
-#[cfg(test)]
 const CREATE_RETRIES: usize = 3;
 
 /// Desired-state pool — mirrors `proxyhub/manager/pool.py: target + ensure_count + busy guard`.
@@ -70,7 +67,6 @@ impl Pool {
     }
 
     /// Remove from pool and lower target, cleaning volumes via FakeDocker (or real docker in prod).
-    #[cfg(test)]
     pub async fn remove_proxy(&self, docker: &FakeDocker, name: &str) -> bool {
         let _lock = self.ensure_lock.lock().await;
         let mut pool = self.pool.write().await;
@@ -85,7 +81,6 @@ impl Pool {
     }
 
     /// Ensure pool size == target using FakeDocker (for tests and MVP). Real docker version parallels this.
-    #[cfg(test)]
     pub async fn ensure_count(&self, docker: &FakeDocker, _image: &str, _network: &str, prefix: &str) {
         let _lock = self.ensure_lock.lock().await;
         let target = self.target.load(Ordering::Relaxed);
@@ -132,7 +127,6 @@ impl Pool {
 
     /// One health cycle: evict gone containers (not busy, not present by name), update healthy flags.
     /// For #15, simplified: uses FakeDocker presence check.
-    #[cfg(test)]
     pub async fn health_cycle(&self, docker: &FakeDocker) {
         let snapshot = self.pool.read().await.clone();
         for ep in snapshot {
@@ -162,6 +156,14 @@ impl Pool {
         let mut pool = self.pool.write().await;
         if let Some(ep) = pool.iter_mut().find(|e| e.name == name) {
             ep.busy = busy;
+        }
+    }
+
+    /// Set health flags on an endpoint (used by health checker / tests).
+    pub async fn set_healthy(&self, name: &str, healthy: bool) {
+        let mut pool = self.pool.write().await;
+        if let Some(ep) = pool.iter_mut().find(|e| e.name == name) {
+            ep.healthy = healthy;
         }
     }
 }
